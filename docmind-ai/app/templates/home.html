@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}DocMind AI — Home{% endblock %}
+{% block content %}
+<div class="hero text-center mx-auto" style="max-width: 640px;">
+    <span class="badge-soft mb-3">AI-powered document intelligence</span>
+    <h1 class="display-5 fw-semibold mb-3">Chat with your documents</h1>
+    <p class="text-secondary fs-5 mb-4">
+        Upload PDFs and documents, then ask questions and get grounded answers backed by your own content.
+    </p>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="/upload" class="btn btn-primary btn-lg px-4"><i class="bi bi-cloud-upload me-2"></i>Upload documents</a>
+        <a href="/chat" class="btn btn-outline-secondary btn-lg px-4"><i class="bi bi-chat-dots me-2"></i>Start chatting</a>
+    </div>
+</div>
+
+<div class="row g-4 mt-5">
+    <div class="col-md-4">
+        <div class="feature-card h-100">
+            <i class="bi bi-cloud-upload feature-icon"></i>
+            <h3 class="h5 mt-3">Upload</h3>
+            <p class="text-secondary mb-0">Drop in PDFs, text, or docs and let DocMind AI index them.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card h-100">
+            <i class="bi bi-chat-dots feature-icon"></i>
+            <h3 class="h5 mt-3">Chat</h3>
+            <p class="text-secondary mb-0">Ask natural-language questions and get answers grounded in your files.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card h-100">
+            <i class="bi bi-clock-history feature-icon"></i>
+            <h3 class="h5 mt-3">History</h3>
+            <p class="text-secondary mb-0">Revisit past conversations and pick up right where you left off.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

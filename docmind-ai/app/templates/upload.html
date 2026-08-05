@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}DocMind AI — Upload{% endblock %}
+{% block content %}
+<div class="mx-auto" style="max-width: 640px;">
+    <h1 class="h3 fw-semibold mb-1">Upload documents</h1>
+    <p class="text-secondary mb-4">Add files to your knowledge base so you can chat with them.</p>
+
+    <form class="upload-dropzone text-center mb-4" action="/upload" method="post" enctype="multipart/form-data">
+        <i class="bi bi-cloud-upload dropzone-icon"></i>
+        <p class="fw-medium mb-1">Drag & drop a file here</p>
+        <p class="text-secondary small mb-3">or</p>
+        <input class="form-control mb-3" type="file" id="file" name="file">
+        <button type="submit" class="btn btn-primary px-4">Upload</button>
+    </form>
+
+    <h2 class="h6 text-uppercase text-secondary mb-3">Recent uploads</h2>
+    <ul class="list-group document-list">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>No documents uploaded yet</span>
+        </li>
+    </ul>
+</div>
+{% endblock %}
