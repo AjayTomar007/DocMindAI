@@ -1,4 +1,5 @@
 import uuid
+from pathlib import Path
 
 from fastapi import UploadFile
 from sqlalchemy import select
@@ -6,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.document import Document
+from app.services.pdf_service import extract_text
 
 ALLOWED_CONTENT_TYPE = "application/pdf"
 CHUNK_SIZE = 1024 * 1024  # 1 MB
@@ -38,6 +40,16 @@ async def save_upload(db: Session, upload_file: UploadFile) -> Document:
     db.add(document)
     db.commit()
     db.refresh(document)
+
+    try:
+        text = extract_text(Path(document.filepath))
+        document.extracted_text = text
+        document.status = "processed" if text else "no_text_found"
+    except Exception:
+        document.status = "extraction_failed"
+    db.commit()
+    db.refresh(document)
+
     return document
 
 
