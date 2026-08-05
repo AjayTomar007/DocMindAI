@@ -20,9 +20,21 @@
     <h2 class="h6 text-uppercase text-secondary mb-3">Recent uploads</h2>
     <ul class="list-group document-list">
         {% for doc in documents %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>{{ doc.filename }}</span>
-            <span class="badge bg-secondary rounded-pill">{{ doc.status }}</span>
+        <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>{{ doc.filename }}</span>
+                <span class="badge rounded-pill
+                    {%- if doc.status == 'processed' %} bg-success
+                    {%- elif doc.status == 'no_text_found' %} bg-warning text-dark
+                    {%- elif doc.status == 'extraction_failed' %} bg-danger
+                    {%- else %} bg-secondary
+                    {%- endif %}">{{ doc.status }}</span>
+            </div>
+            {% if doc.extracted_text %}
+            <p class="text-secondary small mb-0 mt-2">
+                {{ doc.extracted_text[:200] }}{% if doc.extracted_text|length > 200 %}…{% endif %}
+            </p>
+            {% endif %}
         </li>
         {% else %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
