@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+alembic
+pydantic
+pydantic-settings
+psycopg[binary]
+pgvector
+openai
+llama-index
+redis
+celery
+jinja2
+python-multipart
+python-dotenv
