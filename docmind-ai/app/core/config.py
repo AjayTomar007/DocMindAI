@@ -9,6 +9,13 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+psycopg://docmind:docmind@localhost:5432/docmind"
     STORAGE_DIR: Path = Path("storage/uploads")
 
+    CELERY_BROKER_URL: str = "redis://127.0.0.1:6379/0"
+    CELERY_RESULT_BACKEND: str = "redis://127.0.0.1:6379/1"
+
+    OPENAI_API_KEY: str = ""
+    OPENAI_EMBEDDING_MODEL: str = "text-embedding-3-small"
+    EMBEDDING_DIM: int = 1536
+
 
 settings = Settings()
 settings.STORAGE_DIR.mkdir(parents=True, exist_ok=True)

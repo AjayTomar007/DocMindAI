@@ -4,7 +4,12 @@ from sqlalchemy.orm import Session
 
 from app.core.templates import templates
 from app.db.session import get_db
-from app.services.document_service import InvalidFileType, list_documents, save_upload
+from app.services.document_service import (
+    InvalidFileType,
+    all_processed,
+    list_documents,
+    save_upload,
+)
 
 router = APIRouter()
 
@@ -13,7 +18,19 @@ router = APIRouter()
 def upload_page(request: Request, db: Session = Depends(get_db)):
     documents = list_documents(db)
     return templates.TemplateResponse(
-        request, "upload.html", {"active": "upload", "documents": documents}
+        request,
+        "upload.html",
+        {"active": "upload", "documents": documents, "all_done": all_processed(documents)},
+    )
+
+
+@router.get("/upload/documents-partial")
+def upload_documents_partial(request: Request, db: Session = Depends(get_db)):
+    documents = list_documents(db)
+    return templates.TemplateResponse(
+        request,
+        "partials/document_list_container.html",
+        {"documents": documents, "all_done": all_processed(documents)},
     )
 
 

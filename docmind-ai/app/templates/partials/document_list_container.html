@@ -1,0 +1,4 @@
+<div id="document-list-container"
+    {% if not all_done %}hx-get="/upload/documents-partial" hx-trigger="every 3s" hx-swap="outerHTML"{% endif %}>
+    {% include "partials/document_list.html" %}
+</div>
