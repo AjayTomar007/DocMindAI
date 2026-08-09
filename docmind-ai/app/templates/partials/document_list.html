@@ -1,0 +1,25 @@
+<ul class="list-group document-list">
+    {% for doc in documents %}
+    <li class="list-group-item">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>{{ doc.filename }}</span>
+            <span class="badge rounded-pill
+                {%- if doc.status == 'processed' %} bg-success
+                {%- elif doc.status in ['embedding', 'extracted'] %} bg-primary
+                {%- elif doc.status == 'no_text_found' %} bg-warning text-dark
+                {%- elif doc.status in ['extraction_failed', 'embedding_failed'] %} bg-danger
+                {%- else %} bg-secondary
+                {%- endif %}">{{ doc.status }}</span>
+        </div>
+        {% if doc.extracted_text %}
+        <p class="text-secondary small mb-0 mt-2">
+            {{ doc.extracted_text[:200] }}{% if doc.extracted_text|length > 200 %}…{% endif %}
+        </p>
+        {% endif %}
+    </li>
+    {% else %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>No documents uploaded yet</span>
+    </li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,16 @@
+<div class="chat-bubble chat-bubble-user">{{ query }}</div>
+<div class="chat-bubble chat-bubble-assistant">
+    {% if error %}
+    <p class="mb-0 text-danger">{{ error }}</p>
+    {% elif results %}
+    <p class="mb-2 fw-medium">Here's what I found:</p>
+    {% for chunk in results %}
+    <div class="{% if not loop.first %}border-top pt-2 mt-2{% endif %}">
+        <p class="small text-secondary mb-1"><i class="bi bi-file-earmark-pdf text-danger me-1"></i>{{ chunk.document.filename }}</p>
+        <p class="mb-0">{{ chunk.content }}</p>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="mb-0">I couldn't find anything relevant. Try uploading a document first.</p>
+    {% endif %}
+</div>
