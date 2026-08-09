@@ -27,3 +27,6 @@ dist/
 
 # Uploaded files stored locally
 storage/
+
+# Local-only working agreement, not shared in the repo
+CLAUDE.md
