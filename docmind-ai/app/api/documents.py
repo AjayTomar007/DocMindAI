@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, File, Request, UploadFile
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
+from app.core.rate_limit import rate_limit
 from app.core.templates import templates
 from app.db.session import get_db
 from app.services.document_service import (
@@ -34,7 +35,7 @@ def upload_documents_partial(request: Request, db: Session = Depends(get_db)):
     )
 
 
-@router.post("/upload")
+@router.post("/upload", dependencies=[Depends(rate_limit)])
 async def upload_document(db: Session = Depends(get_db), file: UploadFile = File(...)):
     try:
         await save_upload(db, file)

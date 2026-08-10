@@ -6,12 +6,27 @@
     <p class="text-secondary mb-4">Ask a question about your uploaded documents.</p>
 
     <div class="chat-window mb-3" id="chat-window">
+        {% for msg in messages %}
+        <div class="chat-bubble chat-bubble-{{ msg.role }}">
+            <p class="mb-0">{{ msg.content }}</p>
+            {% if msg.sources %}
+            <div class="mt-2 pt-2 border-top">
+                <p class="small text-secondary mb-1 fw-medium">Sources</p>
+                {% for filename in msg.sources %}
+                <p class="small text-secondary mb-0"><i class="bi bi-file-earmark-pdf text-danger me-1"></i>{{ filename }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
         <div class="chat-bubble chat-bubble-assistant">
             Hi! Upload some documents, then ask me anything about them.
         </div>
+        {% endfor %}
     </div>
 
     <form class="d-flex gap-2" hx-post="/chat/message" hx-target="#chat-window" hx-swap="beforeend" hx-on::after-request="this.reset()">
+        <input type="hidden" id="conversation-id-field" name="conversation_id" value="{{ conversation.id if conversation else '' }}">
         <input type="text" name="message" class="form-control" placeholder="Ask a question..." autocomplete="off" required>
         <button type="submit" class="btn btn-primary px-4"><i class="bi bi-send"></i></button>
     </form>

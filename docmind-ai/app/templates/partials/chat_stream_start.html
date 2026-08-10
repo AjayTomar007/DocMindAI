@@ -1,0 +1,8 @@
+<input type="hidden" id="conversation-id-field" name="conversation_id" value="{{ conversation_id }}" hx-swap-oob="true">
+<div class="chat-bubble chat-bubble-user">{{ query }}</div>
+<div class="chat-bubble chat-bubble-assistant" hx-ext="sse"
+     sse-connect="/chat/stream?conversation_id={{ conversation_id }}&message={{ query | urlencode }}"
+     sse-close="done">
+    <p class="mb-0" sse-swap="message" hx-swap="beforeend"></p>
+    <div sse-swap="sources" hx-swap="innerHTML"></div>
+</div>
