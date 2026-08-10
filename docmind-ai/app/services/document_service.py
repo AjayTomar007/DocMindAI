@@ -1,3 +1,4 @@
+import logging
 import uuid
 
 from fastapi import UploadFile
@@ -7,6 +8,8 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.models.document import Document
 from app.workers.tasks import extract_text_task
+
+logger = logging.getLogger(__name__)
 
 ALLOWED_CONTENT_TYPE = "application/pdf"
 CHUNK_SIZE = 1024 * 1024  # 1 MB
@@ -41,6 +44,7 @@ async def save_upload(db: Session, upload_file: UploadFile) -> Document:
     db.commit()
     db.refresh(document)
 
+    logger.info("Received upload %s (%s, %d bytes)", document.id, document.filename, size_bytes)
     extract_text_task.delay(str(document.id))
 
     return document

@@ -14,7 +14,11 @@ class Settings(BaseSettings):
 
     OPENAI_API_KEY: str = ""
     OPENAI_EMBEDDING_MODEL: str = "text-embedding-3-small"
+    OPENAI_CHAT_MODEL: str = "gpt-4o-mini"
     EMBEDDING_DIM: int = 1536
+
+    REDIS_URL: str = "redis://127.0.0.1:6379/2"
+    RATE_LIMIT_PER_MINUTE: int = 20
 
 
 settings = Settings()
