@@ -7,8 +7,7 @@ pydantic-settings
 psycopg[binary]
 pgvector
 pypdf
-openai
-llama-index
+google-genai
 redis
 celery
 jinja2

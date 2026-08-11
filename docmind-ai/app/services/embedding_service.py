@@ -1,7 +1,13 @@
+from google.genai import types
+
 from app.core.config import settings
-from app.services.openai_client import get_client
+from app.services.gemini_client import get_client
 
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
-    response = get_client().embeddings.create(model=settings.OPENAI_EMBEDDING_MODEL, input=texts)
-    return [item.embedding for item in response.data]
+    response = get_client().models.embed_content(
+        model=settings.GEMINI_EMBEDDING_MODEL,
+        contents=texts,
+        config=types.EmbedContentConfig(output_dimensionality=settings.EMBEDDING_DIM),
+    )
+    return [embedding.values for embedding in response.embeddings]

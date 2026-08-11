@@ -1,7 +1,9 @@
 from collections.abc import Iterator
 
+from google.genai import types
+
 from app.core.config import settings
-from app.services.openai_client import get_client
+from app.services.gemini_client import get_client
 
 SYSTEM_PROMPT = (
     "Answer the user's question using only the provided context. "
@@ -9,26 +11,26 @@ SYSTEM_PROMPT = (
 )
 
 
-def _build_messages(query: str, context_chunks: list[str]) -> list[dict]:
+def _build_prompt(query: str, context_chunks: list[str]) -> tuple[str, types.GenerateContentConfig]:
     context = "\n\n---\n\n".join(context_chunks)
-    return [
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"},
-    ]
+    contents = f"Context:\n{context}\n\nQuestion: {query}"
+    config = types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT)
+    return contents, config
 
 
 def generate_answer(query: str, context_chunks: list[str]) -> str:
-    response = get_client().chat.completions.create(
-        model=settings.OPENAI_CHAT_MODEL, messages=_build_messages(query, context_chunks)
+    contents, config = _build_prompt(query, context_chunks)
+    response = get_client().models.generate_content(
+        model=settings.GEMINI_CHAT_MODEL, contents=contents, config=config
     )
-    return response.choices[0].message.content or ""
+    return response.text or ""
 
 
 def stream_answer(query: str, context_chunks: list[str]) -> Iterator[str]:
-    stream = get_client().chat.completions.create(
-        model=settings.OPENAI_CHAT_MODEL, messages=_build_messages(query, context_chunks), stream=True
+    contents, config = _build_prompt(query, context_chunks)
+    stream = get_client().models.generate_content_stream(
+        model=settings.GEMINI_CHAT_MODEL, contents=contents, config=config
     )
     for chunk in stream:
-        delta = chunk.choices[0].delta.content
-        if delta:
-            yield delta
+        if chunk.text:
+            yield chunk.text

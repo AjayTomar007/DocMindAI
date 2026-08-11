@@ -11,8 +11,8 @@ flowchart LR
     FastAPI -->|enqueue task| Redis[(Redis)]
     Redis --> Worker[Celery Worker]
     Worker -->|extract, chunk| PG
-    Worker -->|embed chunks| OpenAI[OpenAI API]
-    FastAPI -->|embed query, generate answer| OpenAI
+    Worker -->|embed chunks| Gemini[Gemini API]
+    FastAPI -->|embed query, generate answer| Gemini
 ```
 
 **Upload → searchable, end to end:**
@@ -24,7 +24,7 @@ sequenceDiagram
     participant Q as Redis
     participant C as Celery Worker
     participant DB as Postgres
-    participant AI as OpenAI
+    participant AI as Gemini
 
     U->>W: POST /upload (PDF)
     W->>DB: save Document (status=queued)
@@ -44,7 +44,7 @@ sequenceDiagram
     participant U as User
     participant W as FastAPI
     participant DB as Postgres
-    participant AI as OpenAI
+    participant AI as Gemini
 
     U->>W: POST /chat/message
     W->>DB: save user Message, create Conversation if new
@@ -61,7 +61,7 @@ sequenceDiagram
 ## Tech stack
 
 - **Backend**: Python 3.13, FastAPI, SQLAlchemy, Alembic, Pydantic
-- **AI**: OpenAI (embeddings + chat completions), pgvector
+- **AI**: Google Gemini (embeddings + chat completions), pgvector
 - **Database**: PostgreSQL + pgvector extension
 - **Background jobs**: Redis + Celery
 - **Storage**: local filesystem
@@ -102,7 +102,7 @@ docmind-ai/
 
 This is how the project was actually developed — full control, fast iteration, no container overhead.
 
-**Prerequisites**: Python 3.13 (via `pyenv`), [Postgres.app](https://postgresapp.com/) (PG17, with `pgvector` built against it), Redis (built from source into `~/redis`), an OpenAI API key.
+**Prerequisites**: Python 3.13 (via `pyenv`), [Postgres.app](https://postgresapp.com/) (PG17, with `pgvector` built against it), Redis (built from source into `~/redis`), a Gemini API key (from [Google AI Studio](https://aistudio.google.com/)).
 
 ```bash
 # 1. Virtualenv + deps
@@ -112,7 +112,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # 2. Configure
-cp .env.example .env   # then fill in OPENAI_API_KEY
+cp .env.example .env   # then fill in GEMINI_API_KEY
 
 # 3. Database
 alembic upgrade head
@@ -130,7 +130,7 @@ Then open http://127.0.0.1:8000.
 
 ```bash
 cd docmind-ai
-cp .env.example .env   # fill in OPENAI_API_KEY
+cp .env.example .env   # fill in GEMINI_API_KEY
 docker compose up --build
 ```
 
@@ -145,9 +145,9 @@ This starts four containers: `db` (Postgres + pgvector), `redis`, `app` (FastAPI
 | `CELERY_BROKER_URL` | `redis://127.0.0.1:6379/0` | Redis DB used as the Celery task queue |
 | `CELERY_RESULT_BACKEND` | `redis://127.0.0.1:6379/1` | Redis DB used for Celery task results |
 | `REDIS_URL` | `redis://127.0.0.1:6379/2` | Redis DB used for rate limiting |
-| `OPENAI_API_KEY` | *(empty)* | **Required** for embeddings/chat to work |
-| `OPENAI_EMBEDDING_MODEL` | `text-embedding-3-small` | Embedding model |
-| `OPENAI_CHAT_MODEL` | `gpt-4o-mini` | Chat completion model |
+| `GEMINI_API_KEY` | *(empty)* | **Required** for embeddings/chat to work |
+| `GEMINI_EMBEDDING_MODEL` | `gemini-embedding-001` | Embedding model |
+| `GEMINI_CHAT_MODEL` | `gemini-3.6-flash` | Chat completion model |
 | `EMBEDDING_DIM` | `1536` | Must match the embedding model's output dimension |
 | `RATE_LIMIT_PER_MINUTE` | `20` | Per-IP, per-route request cap |
 
