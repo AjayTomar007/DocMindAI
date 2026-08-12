@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,6 +20,17 @@ class Settings(BaseSettings):
 
     REDIS_URL: str = "redis://127.0.0.1:6379/2"
     RATE_LIMIT_PER_MINUTE: int = 20
+
+    @field_validator("DATABASE_URL")
+    @classmethod
+    def _use_psycopg_driver(cls, value: str) -> str:
+        # Managed Postgres providers (Render, Heroku, etc.) hand back a plain
+        # postgres:// or postgresql:// URL. SQLAlchemy defaults that scheme to
+        # psycopg2, which isn't installed here — we use psycopg (v3) everywhere.
+        for prefix in ("postgres://", "postgresql://"):
+            if value.startswith(prefix) and not value.startswith("postgresql+psycopg://"):
+                return "postgresql+psycopg://" + value[len(prefix) :]
+        return value
 
 
 settings = Settings()
