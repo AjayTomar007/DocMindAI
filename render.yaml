@@ -2,15 +2,11 @@ services:
   - name: docmind-web
     type: web
     runtime: docker
-    plan: starter
+    plan: free
     dockerContext: ./docmind-ai
     dockerfilePath: ./docmind-ai/Dockerfile
     dockerCommand: sh start.sh
     healthCheckPath: /health
-    disk:
-      name: docmind-storage
-      mountPath: /app/storage
-      sizeGB: 1
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -44,11 +40,11 @@ services:
 
   - name: docmind-redis
     type: keyvalue
-    plan: starter
+    plan: free
     ipAllowList: []
 
 databases:
   - name: docmind-db
-    plan: starter
+    plan: free
     databaseName: docmind
     user: docmind
