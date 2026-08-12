@@ -3,7 +3,10 @@ set -e
 
 alembic upgrade head
 
-celery -A app.workers.celery_app worker --loglevel=info &
+# solo pool: no forked child processes, tasks run sequentially in this one
+# process. Free tier gives us 512Mi total; prefork (the default) would spawn
+# extra worker sub-processes we don't need for a low-traffic demo app.
+celery -A app.workers.celery_app worker --loglevel=info --pool=solo &
 CELERY_PID=$!
 
 uvicorn main:app --host 0.0.0.0 --port "${PORT:-8000}" &
