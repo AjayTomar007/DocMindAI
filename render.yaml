@@ -19,14 +19,17 @@ services:
       - key: CELERY_BROKER_URL
         fromService:
           name: docmind-redis
+          type: keyvalue
           property: connectionString
       - key: CELERY_RESULT_BACKEND
         fromService:
           name: docmind-redis
+          type: keyvalue
           property: connectionString
       - key: REDIS_URL
         fromService:
           name: docmind-redis
+          type: keyvalue
           property: connectionString
       - key: GEMINI_API_KEY
         sync: false
